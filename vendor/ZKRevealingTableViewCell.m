@@ -299,44 +299,28 @@ static char BOOLRevealing;
 #pragma mark - Sliding
 #define kBOUNCE_DISTANCE 7.0
 
+#define kSLIDE_IN_DURATION 0.3
+#define kSPRING_DAMPING 0.5
+#define kINITIAL_SPRING_VELOCITY 20
+
 - (void)_slideInContentViewFromDirection:(ZKRevealingTableViewCellDirection)direction offsetMultiplier:(CGFloat)multiplier
 {
-	CGFloat bounceDistance;
-	
 	if (self.viewToReveal.center.x == self._originalCenter)
 		return;
 	
-	switch (direction) {
-		case ZKRevealingTableViewCellDirectionRight:
-			bounceDistance = kBOUNCE_DISTANCE * multiplier;
-			break;
-		case ZKRevealingTableViewCellDirectionLeft:
-			bounceDistance = -kBOUNCE_DISTANCE * multiplier;
-			break;
-		default:
-			@throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Unhandled gesture direction" userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:direction] forKey:@"direction"]];
-			break;
-	}
-	
-	
-	[UIView animateWithDuration:0.1
-						  delay:0
-						options:UIViewAnimationOptionCurveEaseOut|UIViewAnimationOptionAllowUserInteraction
-					 animations:^{ self.viewToReveal.center = CGPointMake(self._originalCenter, self.viewToReveal.center.y); }
-					 completion:^(BOOL f) {
-                         
-						 [UIView animateWithDuration:0.1 delay:0
-											 options:UIViewAnimationOptionCurveEaseOut
-										  animations:^{ self.viewToReveal.frame = CGRectOffset(self.viewToReveal.frame, bounceDistance, 0); }
-										  completion:^(BOOL f2) {
-											  
-                                              [UIView animateWithDuration:0.1 delay:0
-                                                                  options:UIViewAnimationOptionCurveEaseIn
-                                                               animations:^{ self.viewToReveal.frame = CGRectOffset(self.viewToReveal.frame, -bounceDistance, 0); }
-                                                               completion:NULL];
-										  }
-						  ];
-					 }];
+    [UIView animateWithDuration:kSLIDE_IN_DURATION
+                          delay:0
+         usingSpringWithDamping:kSPRING_DAMPING
+          initialSpringVelocity:kINITIAL_SPRING_VELOCITY
+                        options:UIViewAnimationOptionAllowUserInteraction
+                     animations:^ {
+                         self.viewToReveal.center = CGPointMake(self._originalCenter, self.viewToReveal.center.y);
+                     }
+                     completion:^(BOOL finished) {
+                         if ([self.delegate respondsToSelector:@selector(cellDidConceal:)]) {
+                             [self.delegate cellDidConceal:self];
+                         }
+                     }];
 }
 
 - (void)_slideOutContentViewInDirection:(ZKRevealingTableViewCellDirection)direction;

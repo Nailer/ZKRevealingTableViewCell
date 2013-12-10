@@ -41,6 +41,7 @@ typedef enum {
 - (BOOL)cellShouldReveal:(ZKRevealingTableViewCell *)cell;
 - (void)cellDidBeginPan:(ZKRevealingTableViewCell *)cell;
 - (void)cellDidReveal:(ZKRevealingTableViewCell *)cell;
+- (void)cellDidConceal:(ZKRevealingTableViewCell *)cell;
 
 @end
 
@@ -50,6 +51,6 @@ typedef enum {
 @property (nonatomic, assign) ZKRevealingTableViewCellDirection direction;
 @property (nonatomic, assign) BOOL shouldBounce;
 @property CGFloat pixelsToReveal;
-@property (nonatomic, assign) UIView *viewToReveal;
+@property (nonatomic, assign) IBOutlet UIView *viewToReveal;
 
 @end
