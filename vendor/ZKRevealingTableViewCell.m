@@ -135,8 +135,10 @@ static char BOOLRevealing;
 	[self _setRevealing:revealing];
 	
 	if (self.isRevealing) {
+        [self cellWillReveal];
 		[self _slideOutContentViewInDirection:(self.isRevealing) ? self._currentDirection : self._lastDirection];
 	} else {
+        [self cellWillConceal];
 		[self _slideInContentViewFromDirection:(self.isRevealing) ? self._currentDirection : self._lastDirection offsetMultiplier:self._bounceMultiplier];
     }
 }
@@ -154,6 +156,10 @@ static char BOOLRevealing;
 	
 	if (self.isRevealing && [self.delegate respondsToSelector:@selector(cellDidReveal:)])
 		[self.delegate cellDidReveal:self];
+    
+    if (self.isRevealing) {
+        [self cellDidReveal];
+    }
 }
 
 - (BOOL)_shouldReveal
@@ -320,6 +326,7 @@ static char BOOLRevealing;
                          if ([self.delegate respondsToSelector:@selector(cellDidConceal:)]) {
                              [self.delegate cellDidConceal:self];
                          }
+                         [self cellDidConceal];
                      }];
 }
 

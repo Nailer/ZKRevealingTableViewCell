@@ -54,3 +54,13 @@ typedef enum {
 @property (nonatomic, assign) IBOutlet UIView *viewToReveal;
 
 @end
+
+@interface ZKRevealingTableViewCell(SubclassingHooks)
+
+- (void)cellWillReveal;
+- (void)cellDidReveal;
+- (void)cellWillConceal;
+- (void)cellDidConceal;
+
+@end
+
