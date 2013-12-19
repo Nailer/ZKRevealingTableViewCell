@@ -191,8 +191,8 @@ static char BOOLRevealing;
 		
 		if ([self.delegate respondsToSelector:@selector(cellDidBeginPan:)])
 			[self.delegate cellDidBeginPan:self];
-		
-		
+        
+        [self cellWillReveal];
 	} else if (recognizer.state == UIGestureRecognizerStateChanged) {
 		
 		// If the pan amount is negative, then the last direction is left, and vice versa.
@@ -390,6 +390,26 @@ static char BOOLRevealing;
 		return ((fabs(translation.x) / fabs(translation.y) > 1) ? YES : NO && (superview.contentOffset.y == 0.0 && superview.contentOffset.x == 0.0));
 	}
 	return NO;
+}
+
+- (void)cellWillReveal
+{
+    
+}
+
+- (void)cellDidReveal
+{
+    
+}
+
+- (void)cellWillConceal
+{
+    
+}
+
+- (void)cellDidConceal
+{
+    
 }
 
 @end
