@@ -27,5 +27,7 @@
 #import "ZKRevealingTableViewCell.h"
 
 @interface ZKRevealingTableViewController : UITableViewController <UITableViewDelegate, UITableViewDataSource, ZKRevealingTableViewCellDelegate>
-@property (nonatomic, retain) ZKRevealingTableViewCell *currentlyRevealedCell;
+
+@property (nonatomic, strong) ZKRevealingTableViewCell *currentlyRevealedCell;
+
 @end
