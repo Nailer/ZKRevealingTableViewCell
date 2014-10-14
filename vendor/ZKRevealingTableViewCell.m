@@ -313,7 +313,17 @@ static char BOOLRevealing;
 {
 	if (self.viewToReveal.center.x == self._originalCenter)
 		return;
-	
+
+    BOOL useModernDampening = [UIView respondsToSelector:@selector(animateWithDuration:delay:usingSpringWithDamping:initialSpringVelocity:options:animations:completion:)];
+    if (useModernDampening && multiplier != 0) {
+        [self _slideInContentViewFromDirection:direction];
+    } else {
+        [self _legacySlideInContentViewFromDirection:direction offsetMultiplier:multiplier];
+    }
+}
+
+- (void)_slideInContentViewFromDirection:(ZKRevealingTableViewCellDirection)direction
+{
     [UIView animateWithDuration:kSLIDE_IN_DURATION
                           delay:0
          usingSpringWithDamping:kSPRING_DAMPING
@@ -327,6 +337,47 @@ static char BOOLRevealing;
                              [self.delegate cellDidConceal:self];
                          }
                          [self cellDidConceal];
+                     }];
+}
+
+- (void)_legacySlideInContentViewFromDirection:(ZKRevealingTableViewCellDirection)direction offsetMultiplier:(CGFloat)multiplier
+{
+    CGFloat bounceDistance;
+    switch (direction) {
+        case ZKRevealingTableViewCellDirectionRight:
+            bounceDistance = kBOUNCE_DISTANCE * multiplier;
+            break;
+        case ZKRevealingTableViewCellDirectionLeft:
+            bounceDistance = -kBOUNCE_DISTANCE * multiplier;
+            break;
+        default:
+            @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                           reason:@"Unhandled gesture direction"
+                                         userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:direction] forKey:@"direction"]];
+            break;
+    }
+
+    [UIView animateWithDuration:0.1
+                          delay:0
+                        options:UIViewAnimationOptionCurveEaseOut|UIViewAnimationOptionAllowUserInteraction
+                     animations:^{ self.viewToReveal.center = CGPointMake(self._originalCenter, self.viewToReveal.center.y); }
+                     completion:^(BOOL f) {
+                         if ([self.delegate respondsToSelector:@selector(cellDidConceal:)]) {
+                             [self.delegate cellDidConceal:self];
+                         }
+                         [self cellDidConceal];
+
+                         [UIView animateWithDuration:0.1 delay:0
+                                             options:UIViewAnimationOptionCurveEaseOut
+                                          animations:^{ self.viewToReveal.frame = CGRectOffset(self.viewToReveal.frame, bounceDistance, 0); }
+                                          completion:^(BOOL f2) {
+
+                                              [UIView animateWithDuration:0.1 delay:0
+                                                                  options:UIViewAnimationOptionCurveEaseIn
+                                                               animations:^{ self.viewToReveal.frame = CGRectOffset(self.viewToReveal.frame, -bounceDistance, 0); }
+                                                               completion:NULL];
+                                          }
+                         ];
                      }];
 }
 
