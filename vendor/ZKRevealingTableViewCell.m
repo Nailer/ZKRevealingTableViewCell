@@ -26,6 +26,7 @@
 
 #import "ZKRevealingTableViewCell.h"
 #import <QuartzCore/QuartzCore.h>
+#import <objc/runtime.h>
 
 @interface ZKRevealingTableViewCell ()
 
@@ -114,7 +115,6 @@
 }
 
 #pragma mark - Accessors
-#import <objc/runtime.h>
 
 static char BOOLRevealing;
 
