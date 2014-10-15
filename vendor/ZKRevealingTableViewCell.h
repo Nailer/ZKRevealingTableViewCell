@@ -29,15 +29,16 @@
 @class ZKRevealingTableViewCell;
 
 typedef enum {
-	ZKRevealingTableViewCellDirectionRight = 0,
-	ZKRevealingTableViewCellDirectionLeft,
-	ZKRevealingTableViewCellDirectionBoth,
-	ZKRevealingTableViewCellDirectionNone,
+    ZKRevealingTableViewCellDirectionRight = 0,
+    ZKRevealingTableViewCellDirectionLeft,
+    ZKRevealingTableViewCellDirectionBoth,
+    ZKRevealingTableViewCellDirectionNone,
 } ZKRevealingTableViewCellDirection;
 
 @protocol ZKRevealingTableViewCellDelegate <NSObject>
 
 @optional
+- (BOOL)cellShouldPan:(ZKRevealingTableViewCell *)cell;
 - (BOOL)cellShouldReveal:(ZKRevealingTableViewCell *)cell;
 - (void)cellDidBeginPan:(ZKRevealingTableViewCell *)cell;
 - (void)cellDidReveal:(ZKRevealingTableViewCell *)cell;
@@ -53,6 +54,8 @@ typedef enum {
 @property CGFloat pixelsToReveal;
 @property (nonatomic, weak) IBOutlet UIView *viewToReveal;
 
+- (void)setRevealing:(BOOL)revealing animated:(BOOL)animated;
+
 @end
 
 @interface ZKRevealingTableViewCell(SubclassingHooks)
@@ -63,4 +66,3 @@ typedef enum {
 - (void)cellDidConceal;
 
 @end
-
